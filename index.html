@@ -1,316 +1,898 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub Tool – Checkliste & Quiz</title>
-  <style>
-    :root {
-      --bg: #f5f7fa;
-      --card-bg: #fff;
-      --text: #333;
-      --muted: #777;
-      --primary: #2563eb;
-      --accent: #22c55e;
-      --radius: 12px;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GitHub Projekt Tool — Deluxe</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#ffffff; --muted:#6b7280; --text:#0f172a;
+    --primary:#2563eb; --accent:#22c55e; --glass: rgba(255,255,255,0.6);
+    --radius:14px; --shadow: 0 6px 24px rgba(16,24,40,0.08);
+    --glass-2: rgba(255,255,255,0.04);
+  }
+  [data-theme="dark"]{
+    --bg:#0b1220; --card:#0f1724; --muted:#94a3b8; --text:#e6eef8;
+    --primary:#6ea8ff; --accent:#34d399; --glass: rgba(255,255,255,0.03);
+    --shadow: 0 8px 30px rgba(2,6,23,0.6);
+  }
 
-    [data-theme="dark"] {
-      --bg: #0d1117;
-      --card-bg: #161b22;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --primary: #58a6ff;
-      --accent: #16a34a;
-      --shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-    }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:linear-gradient(180deg,var(--bg), rgba(0,0,0,0.02));
+    color:var(--text); -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale; padding:20px; display:flex; justify-content:center;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-      transition: background 0.3s, color 0.3s;
-    }
+  .app{
+    width:100%; max-width:1100px;
+    display:grid; gap:18px; align-content:start;
+  }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+  header.app-header{
+    display:flex; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .brand{display:flex; gap:12px; align-items:center}
+  .logo{
+    width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--primary), #7c3aed);
+    color:white; display:grid; place-items:center; font-weight:700; box-shadow:var(--shadow);
+  }
+  h1{font-size:1.2rem;margin:0}
+  p.lead{margin:0;color:var(--muted); font-size:0.95rem}
 
-    h1 {
-      color: var(--primary);
-      font-size: 1.8rem;
-    }
+  .controls{display:flex; gap:8px; align-items:center}
+  button.btn{
+    border:0;padding:8px 12px;border-radius:10px;background:var(--card);cursor:pointer;
+    box-shadow:var(--shadow); color:var(--text); font-weight:600;
+  }
+  button.btn.primary{background:linear-gradient(90deg,var(--primary), #4f46e5); color:white}
+  button.icon{
+    width:44px;height:44px;border-radius:10px; display:grid; place-items:center;
+  }
 
-    nav {
-      display: flex;
-      gap: 10px;
-    }
+  main.grid{
+    display:grid; grid-template-columns: 1fr 420px; gap:18px;
+  }
 
-    nav button {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.2s;
-    }
+  /* Left column */
+  .panel{
+    background:var(--card); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);
+  }
 
-    nav button:hover {
-      background: #1e4ed8;
-    }
+  .tabs{display:flex; gap:8px; margin-bottom:12px}
+  .tab{flex:1; text-align:center; padding:10px; border-radius:10px; cursor:pointer; font-weight:700}
+  .tab.active{background:linear-gradient(90deg,var(--primary), #7c3aed); color:white}
 
-    .theme-btn {
-      background: var(--accent);
-    }
+  /* Accordion (Checkliste) */
+  .accordion .section{
+    border-radius:12px; overflow:hidden; margin-bottom:12px; border:1px solid rgba(0,0,0,0.04);
+  }
+  .accordion summary{
+    list-style:none; cursor:pointer; display:flex; gap:12px; align-items:center; padding:14px 16px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.6), transparent);
+  }
+  .accordion[open] summary{background:linear-gradient(0deg, rgba(0,0,0,0.02), transparent)}
+  .accordion summary::-webkit-details-marker{display:none}
+  .acc-title{display:flex; gap:12px; align-items:center; flex:1}
+  .acc-title h3{margin:0;font-size:1rem}
+  .acc-meta{color:var(--muted); font-size:0.9rem}
 
-    section {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      margin-top: 15px;
-      transition: 0.3s;
-    }
+  .acc-body{padding:12px 16px 18px; border-top:1px solid rgba(0,0,0,0.03); background:linear-gradient(180deg, transparent, rgba(0,0,0,0.01))}
+  ul.items{list-style:none;padding:0;margin:0; display:flex; flex-direction:column; gap:8px}
+  li.item{display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px}
+  li.item label{flex:1; cursor:pointer}
+  input[type="checkbox"]{transform:scale(1.2); accent-color:var(--primary); cursor:pointer}
 
-    h2 {
-      color: var(--primary);
-      border-left: 4px solid var(--primary);
-      padding-left: 10px;
-      margin-bottom: 10px;
-    }
+  .code{
+    margin-top:12px; background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+    padding:12px;border-radius:8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:0.9rem;
+    overflow:auto; border:1px solid rgba(0,0,0,0.03);
+  }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 10px;
-    }
+  /* Right column */
+  .side{
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .card{background:var(--card); padding:14px; border-radius:12px; box-shadow:var(--shadow)}
+  .small{font-size:0.9rem;color:var(--muted)}
 
-    li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid #3333;
-      padding: 8px 0;
-    }
+  /* Quiz */
+  .quiz .q{margin-bottom:14px}
+  .quiz .q p{margin:0 0 8px;font-weight:700}
+  .quiz label{display:block;padding:8px;border-radius:8px;background:var(--glass); margin-bottom:6px; cursor:pointer}
+  .quiz input[type="radio"]{margin-right:8px}
 
-    input[type="checkbox"] {
-      transform: scale(1.3);
-      accent-color: var(--primary);
-      cursor: pointer;
-    }
+  .result{font-weight:800; margin-top:10px}
 
-    li.checked label {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
+  /* Tables */
+  table{width:100%; border-collapse:collapse; margin-top:10px;font-size:0.95rem}
+  th,td{padding:8px;border:1px solid rgba(0,0,0,0.06); text-align:left}
+  thead th{background:linear-gradient(90deg, rgba(0,0,0,0.02), transparent)}
 
-    label {
-      flex: 1;
-      cursor: pointer;
-    }
+  /* footer */
+  footer{font-size:0.85rem;color:var(--muted); text-align:center; padding:8px 0; margin-top:8px}
 
-    pre {
-      background: #1e293b33;
-      padding: 10px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin-top: 10px;
-    }
+  /* responsive */
+  @media (max-width:980px){
+    main.grid{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){
+    header.app-header{flex-direction:column;align-items:flex-start; gap:10px}
+    .logo{width:44px;height:44px}
+  }
 
-    .reset-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-top: 10px;
-    }
-
-    .reset-btn:hover {
-      background: #1e4ed8;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .question {
-      margin-bottom: 20px;
-    }
-
-    .question p {
-      font-weight: 600;
-    }
-
-    .result {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    footer {
-      text-align: center;
-      color: var(--muted);
-      margin: 30px 0 10px;
-      font-size: 0.9rem;
-    }
-
-    @media (max-width: 600px) {
-      body { padding: 15px; }
-      h1 { font-size: 1.5rem; }
-      section { padding: 15px; }
-    }
-  </style>
+  /* subtle animations */
+  .fadeIn{animation:fadeIn 320ms ease}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+</style>
 </head>
 <body>
+<div class="app" data-theme>
+  <header class="app-header fadeIn">
+    <div class="brand">
+      <div class="logo">GH</div>
+      <div>
+        <h1>GitHub Projekt Tool — Deluxe</h1>
+        <p class="lead">Checkliste • Quiz • Ressourcen — interaktiv & mobiloptimiert</p>
+      </div>
+    </div>
 
-  <header>
-    <h1>GitHub Tool</h1>
-    <nav>
-      <button id="btnCheckliste">✅ Checkliste</button>
-      <button id="btnQuiz">❓ Quiz</button>
-      <button class="theme-btn" id="toggleTheme">🌙</button>
-    </nav>
+    <div class="controls">
+      <button class="btn primary" id="exportBtn" title="Fortschritt exportieren (JSON)">Export</button>
+      <button class="btn" id="importBtn" title="Fortschritt importieren">Import</button>
+      <button class="btn" id="resetAll" title="Alles zurücksetzen">Reset</button>
+      <button class="btn icon" id="themeToggle" title="Dark / Light">🌙</button>
+    </div>
   </header>
 
-  <!-- Checkliste -->
-  <section id="checklisteSection">
-    <h2>🛠️ 1. Projekt auf GitHub erstellen</h2>
-    <ul>
-      <li><input type="checkbox" id="s1"><label for="s1">GitHub öffnen & anmelden</label></li>
-      <li><input type="checkbox" id="s2"><label for="s2">„+ → New repository“ klicken</label></li>
-      <li><input type="checkbox" id="s3"><label for="s3">README und .gitignore hinzufügen</label></li>
-    </ul>
+  <main class="grid fadeIn">
+    <!-- LEFT: CONTENT -->
+    <section class="panel">
+      <div class="tabs" role="tablist" aria-label="Navigation">
+        <div class="tab active" data-tab="checklist">✅ Checkliste</div>
+        <div class="tab" data-tab="quiz">❓ Quiz</div>
+        <div class="tab" data-tab="resources">📘 Ressourcen</div>
+      </div>
 
-    <h2>🧩 2. Lokale Einrichtung</h2>
-    <ul>
-      <li><input type="checkbox" id="s4"><label for="s4">Git installieren</label></li>
-      <li><input type="checkbox" id="s5"><label for="s5">Repository klonen</label></li>
-    </ul>
+      <!-- CHECKLISTE -->
+      <div id="checklist" class="content-block">
+        <div class="accordion" id="accordion">
+          <!-- 1 -->
+          <details class="section" id="sec-1">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M12 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <div>
+                  <h3>1. Projekt auf GitHub erstellen</h3>
+                  <div class="acc-meta">Repository anlegen, Sichtbarkeit & README</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-1-1"><label for="c-1-1">Auf <a href="https://github.com" target="_blank">github.com</a> einloggen</label></li>
+                <li class="item"><input type="checkbox" id="c-1-2"><label for="c-1-2">„+ → New repository“ klicken</label></li>
+                <li class="item"><input type="checkbox" id="c-1-3"><label for="c-1-3">Repository-Name vergeben & Sichtbarkeit wählen</label></li>
+                <li class="item"><input type="checkbox" id="c-1-4"><label for="c-1-4">README, .gitignore, LICENSE optional hinzufügen</label></li>
+                <li class="item"><input type="checkbox" id="c-1-5"><label for="c-1-5">Auf "Create repository" klicken</label></li>
+              </ul>
+            </div>
+          </details>
 
-    <pre><code>git clone https://github.com/benutzername/projekt.git</code></pre>
-    <button class="reset-btn" id="reset">🔄 Fortschritt zurücksetzen</button>
-  </section>
+          <!-- 2 -->
+          <details class="section" id="sec-2">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div>
+                  <h3>2. Projekt lokal in VS Code einrichten</h3>
+                  <div class="acc-meta">Git, VS Code & Repository klonen</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-2-1"><label for="c-2-1">Git installieren (<a href="https://git-scm.com" target="_blank">git-scm.com</a>)</label></li>
+                <li class="item"><input type="checkbox" id="c-2-2"><label for="c-2-2">VS Code installieren</label></li>
+                <li class="item"><input type="checkbox" id="c-2-3"><label for="c-2-3">Repository klonen & in VS Code öffnen</label></li>
+              </ul>
+              <div class="code"><strong>Beispiel:</strong>
+<pre>git clone https://github.com/benutzername/mein-projekt.git
+cd mein-projekt
+code .</pre></div>
+            </div>
+          </details>
 
-  <!-- Quiz -->
-  <section id="quizSection" class="hidden">
-    <h2>❓ GitHub Quiz</h2>
-    <div id="quiz"></div>
-    <button id="submitQuiz">Ergebnis anzeigen</button>
-    <p id="quizResult" class="result"></p>
-  </section>
+          <!-- 3 -->
+          <details class="section" id="sec-3">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M3 6h18v12H3z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div>
+                  <h3>3. Struktur und Dateien einrichten</h3>
+                  <div class="acc-meta">Ordnerstruktur, README, .gitignore, initialer Commit</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-3-1"><label for="c-3-1">Projektstruktur (z. B. src/, docs/, tests/)</label></li>
+                <li class="item"><input type="checkbox" id="c-3-2"><label for="c-3-2">README.md anpassen</label></li>
+                <li class="item"><input type="checkbox" id="c-3-3"><label for="c-3-3">.gitignore ergänzen</label></li>
+                <li class="item"><input type="checkbox" id="c-3-4"><label for="c-3-4">Initialer Commit & push</label></li>
+              </ul>
+              <div class="code"><pre>git add .
+git commit -m "Initial commit"
+git push origin main</pre></div>
+            </div>
+          </details>
 
-  <footer>© 2025 GitHub Tool · Erstellt mit ❤️</footer>
+          <!-- 4 -->
+          <details class="section" id="sec-4">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div>
+                  <h3>4. Issues nutzen</h3>
+                  <div class="acc-meta">Issues erstellen, Labels, Milestones, Zuordnung</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-4-1"><label for="c-4-1">Issue-Tab → New Issue</label></li>
+                <li class="item"><input type="checkbox" id="c-4-2"><label for="c-4-2">Titel + Beschreibung verfassen</label></li>
+                <li class="item"><input type="checkbox" id="c-4-3"><label for="c-4-3">Labels, Milestones & Assignees setzen</label></li>
+                <li class="item"><input type="checkbox" id="c-4-4"><label for="c-4-4">Commits mit <code>Fixes #1</code> verknüpfen</label></li>
+              </ul>
+            </div>
+          </details>
 
-  <script>
-    // ====================
-    // CHECKLISTE
-    // ====================
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(cb => {
-      const saved = localStorage.getItem(cb.id);
-      if (saved === "true") {
-        cb.checked = true;
-        cb.parentElement.classList.add("checked");
-      }
-      cb.addEventListener("change", () => {
-        localStorage.setItem(cb.id, cb.checked);
-        cb.parentElement.classList.toggle("checked", cb.checked);
+          <!-- 5 -->
+          <details class="section" id="sec-5">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <div>
+                  <h3>5. Projektmanagement mit GitHub Projects</h3>
+                  <div class="acc-meta">Boards, Spalten & Karten</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-5-1"><label for="c-5-1">Neues Board unter "Projects" anlegen</label></li>
+                <li class="item"><input type="checkbox" id="c-5-2"><label for="c-5-2">Spalten: To Do, In Progress, Done</label></li>
+                <li class="item"><input type="checkbox" id="c-5-3"><label for="c-5-3">Issues & PRs als Karten verknüpfen</label></li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- 6 -->
+          <details class="section" id="sec-6">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M6 3v12" stroke="currentColor" stroke-width="1.4"/><path d="M18 21V9" stroke="currentColor" stroke-width="1.4"/></svg>
+                <div>
+                  <h3>6. Branches & Pull Requests</h3>
+                  <div class="acc-meta">Branching-Strategie & PR-Workflow</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-6-1"><label for="c-6-1">Feature-Branch erstellen</label></li>
+                <li class="item"><input type="checkbox" id="c-6-2"><label for="c-6-2">PR erstellen & Review einholen</label></li>
+                <li class="item"><input type="checkbox" id="c-6-3"><label for="c-6-3">Merge nach Review (via GitHub UI)</label></li>
+              </ul>
+              <div class="code"><pre>git checkout -b feature/mein-feature
+git push origin feature/mein-feature</pre></div>
+            </div>
+          </details>
+
+          <!-- 7 -->
+          <details class="section" id="sec-7">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 6 .5-4.5 4 1 6L12 16l-5.5 2.5 1-6L3 8.5 9 8 12 2z" stroke="currentColor" stroke-width="0.8" fill="currentColor"/></svg>
+                <div>
+                  <h3>7. Tests & Codequalität</h3>
+                  <div class="acc-meta">Linter, Tests, CI</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-7-1"><label for="c-7-1">ESLint & Prettier einrichten</label></li>
+                <li class="item"><input type="checkbox" id="c-7-2"><label for="c-7-2">Unit & Integration Tests schreiben</label></li>
+                <li class="item"><input type="checkbox" id="c-7-3"><label for="c-7-3">Tests lokal ausführen & im CI laufen lassen</label></li>
+              </ul>
+              <div class="small" style="margin-top:8px">Beispiel: <code>npm test</code> oder <code>pytest</code></div>
+            </div>
+          </details>
+
+          <!-- 8 -->
+          <details class="section" id="sec-8">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="currentColor" stroke-width="1.4"/></svg>
+                <div>
+                  <h3>8. Pflege & Zusammenarbeit</h3>
+                  <div class="acc-meta">Docs, Releases & Versionierung</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <ul class="items">
+                <li class="item"><input type="checkbox" id="c-8-1"><label for="c-8-1">README & Dokumentation aktuell halten</label></li>
+                <li class="item"><input type="checkbox" id="c-8-2"><label for="c-8-2">Releases verwalten</label></li>
+                <li class="item"><input type="checkbox" id="c-8-3"><label for="c-8-3">Versionierung mit Tags</label></li>
+              </ul>
+              <div class="code"><pre>git tag v1.0.0
+git push origin v1.0.0</pre></div>
+            </div>
+          </details>
+
+          <!-- 9 -->
+          <details class="section" id="sec-9">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div>
+                  <h3>9. Empfohlene Projektdateien</h3>
+                  <div class="acc-meta">README, LICENSE, CONTRIBUTING, Code of Conduct...</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <table>
+                <thead><tr><th>Datei</th><th>Zweck</th></tr></thead>
+                <tbody>
+                  <tr><td>README.md</td><td>Projektbeschreibung & Anleitung</td></tr>
+                  <tr><td>.gitignore</td><td>Dateien vom Commit ausschließen</td></tr>
+                  <tr><td>LICENSE</td><td>Rechtliche Lizenz</td></tr>
+                  <tr><td>CONTRIBUTING.md</td><td>Anleitung für Mitwirkende</td></tr>
+                  <tr><td>CODE_OF_CONDUCT.md</td><td>Verhaltenskodex</td></tr>
+                  <tr><td>CHANGELOG.md</td><td>Versions- & Änderungsverlauf</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <!-- 10 -->
+          <details class="section" id="sec-10">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M12 3v18" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div>
+                  <h3>10. GitHub Actions (CI/CD)</h3>
+                  <div class="acc-meta">Workflow-Beispiele & Automatisierung</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <div class="code"><pre name="ci-workflow">name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm test</pre></div>
+              <ul class="items" style="margin-top:10px">
+                <li class="item"><input type="checkbox" id="c-10-1"><label for="c-10-1">CI Workflow hinzufügen</label></li>
+                <li class="item"><input type="checkbox" id="c-10-2"><label for="c-10-2">Tests in Actions ausführen</label></li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- 11 -->
+          <details class="section" id="sec-11">
+            <summary>
+              <div class="acc-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div>
+                  <h3>11. Nützliche Git-Befehle</h3>
+                  <div class="acc-meta">Kurze Reference mit Befehlen</div>
+                </div>
+              </div>
+            </summary>
+            <div class="acc-body">
+              <table>
+                <thead><tr><th>Befehl</th><th>Bedeutung</th></tr></thead>
+                <tbody>
+                  <tr><td>git status</td><td>Status anzeigen</td></tr>
+                  <tr><td>git add .</td><td>Alle Änderungen vormerken</td></tr>
+                  <tr><td>git commit -m "msg"</td><td>Commit erstellen</td></tr>
+                  <tr><td>git pull</td><td>Änderungen vom Remote holen</td></tr>
+                  <tr><td>git push</td><td>Änderungen hochladen</td></tr>
+                  <tr><td>git checkout branch</td><td>Branch wechseln</td></tr>
+                  <tr><td>git branch -d branch</td><td>Branch löschen</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+        </div> <!-- accordion -->
+      </div> <!-- checklist -->
+
+      <!-- QUIZ -->
+      <div id="quiz" class="content-block hidden">
+        <div class="quiz">
+          <!-- questions injected by JS -->
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px">
+          <button class="btn primary" id="quizSubmit">Ergebnis anzeigen</button>
+          <button class="btn" id="quizReset">Quiz neu</button>
+        </div>
+        <div id="quizOutcome" class="result"></div>
+      </div>
+
+      <!-- RESOURCES -->
+      <div id="resources" class="content-block hidden">
+        <h2>📘 Lernressourcen & Links</h2>
+        <p class="small">Kurze Liste mit offiziellen Guides und praxisnahen Tutorials.</p>
+        <ul style="margin-top:8px">
+          <li class="small">GitHub Docs — <a href="https://docs.github.com/" target="_blank">docs.github.com</a></li>
+          <li class="small">Pro Git (Buch) — <a href="https://git-scm.com/book/de/v2" target="_blank">git-scm.com/book</a></li>
+          <li class="small">GitHub Actions Guide — <a href="https://docs.github.com/en/actions" target="_blank">GitHub Actions</a></li>
+          <li class="small">VS Code Git Integration — <a href="https://code.visualstudio.com/docs/editor/versioncontrol" target="_blank">VS Code</a></li>
+        </ul>
+        <h3 style="margin-top:12px">Kurze Cheatsheets</h3>
+        <div class="code"><pre># Initialisieren
+git init
+
+# Branching
+git checkout -b feature/x
+
+# Arbeiten
+git add .
+git commit -m "desc"
+git push origin feature/x</pre></div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="side">
+      <div class="card">
+        <h3 style="margin:0 0 8px">Fortschritt</h3>
+        <div id="progressText" class="small">Keine Daten geladen</div>
+        <div style="height:8px; background:linear-gradient(90deg,var(--primary),var(--accent)); border-radius:8px; margin-top:10px; width:100%; overflow:hidden">
+          <div id="progressBar" style="height:8px; width:0%; background:linear-gradient(90deg, rgba(255,255,255,0.2), transparent)"></div>
+        </div>
+        <div style="margin-top:10px; display:flex; gap:8px">
+          <button class="btn" id="openAll">Alle öffnen</button>
+          <button class="btn" id="closeAll">Alle schließen</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin:0 0 8px">Quiz Übersicht</h4>
+        <div class="small">Beantworte Fragen zu allen 11 Kapiteln.</div>
+        <div style="margin-top:10px; display:flex; gap:8px">
+          <button class="btn primary" id="gotoQuiz">Zum Quiz</button>
+          <button class="btn" id="shuffleQuiz">Fragen mischen</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin:0 0 8px">Daten</h4>
+        <div class="small">Export / Import des Fortschritts (JSON)</div>
+        <div style="margin-top:8px; display:flex; gap:8px">
+          <button class="btn" id="downloadData">Herunterladen</button>
+          <button class="btn" id="clearLocal">Löschen</button>
+        </div>
+      </div>
+
+      <div class="card small">
+        <strong>Tipp:</strong> Die Checkliste speichert automatisch deine Häkchen im Browser (LocalStorage).
+      </div>
+    </aside>
+
+  </main>
+
+  <footer>© 2025 · GitHub Projekt Tool — Deluxe</footer>
+</div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="fileInput" accept="application/json" style="display:none" />
+
+<script>
+(function(){
+  // Helper
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  // Theme
+  const root = document.documentElement;
+  const appElem = document.querySelector('.app');
+  const themeToggle = $('#themeToggle');
+  const THEME_KEY = 'gh_tool_theme';
+  function applyTheme(t){
+    appElem.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+    themeToggle.textContent = t === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem(THEME_KEY, t);
+  }
+  const savedTheme = localStorage.getItem(THEME_KEY) || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', ()=> applyTheme(appElem.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+  // Tabs
+  const tabs = $$('.tab');
+  const blocks = { checklist:$('#checklist'), quiz:$('#quiz'), resources:$('#resources') };
+  function setActive(tabName){
+    tabs.forEach(t=> t.classList.toggle('active', t.dataset.tab === tabName));
+    Object.keys(blocks).forEach(k => blocks[k].classList.toggle('hidden', k !== tabName));
+  }
+  setActive('checklist');
+  tabs.forEach(t=> t.addEventListener('click', ()=> setActive(t.dataset.tab)));
+
+  // Accordion open/close all
+  $('#openAll').addEventListener('click', ()=> $$('details.section').forEach(d=> d.open = true));
+  $('#closeAll').addEventListener('click', ()=> $$('details.section').forEach(d=> d.open = false));
+
+  // Collect all checkbox inputs and persist states
+  const checkboxEls = $$('input[type="checkbox"]');
+  const CHECK_PREFIX = 'gh_ck_';
+
+  function loadCheckStates(){
+    let total = 0, done = 0;
+    checkboxEls.forEach(cb => {
+      const id = cb.id;
+      const v = localStorage.getItem(CHECK_PREFIX + id);
+      if (v === 'true'){ cb.checked = true; cb.closest('li') && cb.closest('li').classList.add('checked'); }
+      cb.addEventListener('change', ()=>{
+        localStorage.setItem(CHECK_PREFIX + id, cb.checked);
+        cb.closest('li') && cb.closest('li').classList.toggle('checked', cb.checked);
+        updateProgress();
       });
+      total++;
+      if(cb.checked) done++;
     });
+    updateProgress();
+  }
 
-    document.getElementById("reset").addEventListener("click", () => {
-      if (confirm("Alle Häkchen entfernen?")) {
-        checkboxes.forEach(cb => {
-          cb.checked = false;
-          localStorage.removeItem(cb.id);
-          cb.parentElement.classList.remove("checked");
-        });
+  function updateProgress(){
+    const total = checkboxEls.length;
+    const done = checkboxEls.filter(cb=> cb.checked).length;
+    const percent = Math.round((done/total)*100);
+    $('#progressText').textContent = `${done} von ${total} Aufgaben erledigt (${percent}%)`;
+    $('#progressBar').style.width = percent + '%';
+  }
+
+  loadCheckStates();
+
+  // reset all
+  $('#resetAll').addEventListener('click', ()=>{
+    if(confirm('Möchtest du wirklich ALLE Fortschritte löschen?')){
+      checkboxEls.forEach(cb => {
+        cb.checked = false;
+        cb.closest('li') && cb.closest('li').classList.remove('checked');
+        localStorage.removeItem(CHECK_PREFIX + cb.id);
+      });
+      // also quiz state
+      localStorage.removeItem('gh_quiz_state');
+      updateProgress();
+      alert('Fortschritt wurde zurückgesetzt.');
+    }
+  });
+
+  // Export / Import
+  function gatherState(){
+    const checks = {};
+    checkboxEls.forEach(cb => checks[cb.id] = !!cb.checked);
+    const quizState = JSON.parse(localStorage.getItem('gh_quiz_state') || 'null');
+    const theme = localStorage.getItem(THEME_KEY) || 'light';
+    return { checks, quizState, theme, exportedAt: new Date().toISOString() };
+  }
+  $('#exportBtn').addEventListener('click', ()=>{
+    const data = gatherState();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'gh-tool-progress.json'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  $('#downloadData').addEventListener('click', ()=> $('#exportBtn').click());
+
+  $('#importBtn').addEventListener('click', ()=> $('#fileInput').click());
+  $('#fileInput').addEventListener('change', (ev)=>{
+    const f = ev.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try{
+        const data = JSON.parse(e.target.result);
+        if(data && data.checks){
+          Object.keys(data.checks).forEach(id => {
+            const cb = document.getElementById(id);
+            if(cb){
+              cb.checked = !!data.checks[id];
+              cb.closest('li') && cb.closest('li').classList.toggle('checked', cb.checked);
+              localStorage.setItem(CHECK_PREFIX + id, cb.checked);
+            }
+          });
+        }
+        if(data.theme) applyTheme(data.theme);
+        if(data.quizState) localStorage.setItem('gh_quiz_state', JSON.stringify(data.quizState));
+        updateProgress();
+        alert('Import erfolgreich.');
+      }catch(err){
+        alert('Fehler beim Einlesen: ' + err.message);
       }
-    });
+    };
+    reader.readAsText(f);
+  });
 
-    // ====================
-    // QUIZ
-    // ====================
-    const questions = [
-      { q: "Was macht der Befehl 'git clone'?", a: "Kopiert ein Repository auf deinen PC", options: ["Erstellt ein neues Repo", "Kopiert ein Repository auf deinen PC", "Fügt Änderungen hinzu"] },
-      { q: "Wofür steht 'README.md'?", a: "Projektbeschreibung & Anleitung", options: ["Fehlerprotokoll", "Projektbeschreibung & Anleitung", "Git-Einstellungen"] },
-      { q: "Mit welchem Befehl lädst du Änderungen hoch?", a: "git push", options: ["git add", "git pull", "git push"] },
-      { q: "Wozu dient '.gitignore'?", a: "Dateien vom Tracking ausschließen", options: ["Dateien löschen", "Dateien hochladen", "Dateien vom Tracking ausschließen"] },
-    ];
+  $('#clearLocal').addEventListener('click', ()=>{
+    if(confirm('Lokale Daten (nur dieses Tool) entfernen?')){
+      checkboxEls.forEach(cb => localStorage.removeItem(CHECK_PREFIX + cb.id));
+      localStorage.removeItem('gh_quiz_state');
+      alert('Daten entfernt. Seite wird neu geladen.');
+      location.reload();
+    }
+  });
 
-    const quizContainer = document.getElementById("quiz");
-    questions.forEach((q, i) => {
-      const div = document.createElement("div");
-      div.className = "question";
-      div.innerHTML = `<p>${i + 1}. ${q.q}</p>` +
-        q.options.map(o => `
-          <label><input type="radio" name="q${i}" value="${o}"> ${o}</label><br>
-        `).join("");
+  // Theme quick: ensure app container keeps theme attribute
+  (function initThemeAttr(){
+    const t = localStorage.getItem(THEME_KEY) || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.querySelector('.app').setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+  })();
+
+  // QUIZ: Prepare questions across all 11 topics
+  const QUESTIONS = [
+    // from section 1
+    {q:"Was macht 'git clone'?", opts:["Ein neues leeres Repo auf GitHub erstellen","Ein Repository lokal kopieren","Ein Commit rückgängig machen"], a:1, topic:1},
+    {q:"Was sollte beim Anlegen eines neuen Repos optional hinzugefügt werden?", opts:["README, .gitignore, LICENSE","Nur binary files","Nichts"], a:0, topic:1},
+
+    // section 2
+    {q:"Welcher Befehl öffnet das Verzeichnis in VS Code?", opts:["code .","vscode start","open ."], a:0, topic:2},
+    {q:"Wo installierst du Git üblicherweise?", opts:["git-scm.com","npmjs.com","github.com"], a:0, topic:2},
+
+    // section 3
+    {q:"Welcher Ordner ist typisch für Quellcode?", opts:["assets/","src/","docs/"], a:1, topic:3},
+    {q:"Wozu dient .gitignore?", opts:["Um Dateien vom Tracking auszuschließen","Um Commits zu signieren","Um Branches zu erstellen"], a:0, topic:3},
+
+    // section 4
+    {q:"Womit verknüpft man einen Commit automatisch mit einem Issue?", opts:["Close #1","Fixes #1","Link #1"], a:1, topic:4},
+    {q:"Was gehört in ein gutes Issue?", opts:["Nur ein Wort","Titel + ausführliche Beschreibung","Nur ein Label"], a:1, topic:4},
+
+    // section 5
+    {q:"Welche Spalten sind in einem einfachen Projektboard sinnvoll?", opts:["To Do / In Progress / Done","Open / Closed / Merged","New / Old / Archived"], a:0, topic:5},
+
+    // section 6
+    {q:"Wie heißt ein typischer Feature-Branch?", opts:["feature/mein-feature","main","hotfix"], a:0, topic:6},
+    {q:"Was sollte vor dem Mergen passieren?", opts:["PR-Review & Tests","Direkt mergen","Branch löschen"], a:0, topic:6},
+
+    // section 7
+    {q:"Welche Tools sorgen für Codequalität? (z. B.)", opts:["ESLint & Prettier","Photoshop & Figma","Node & NPM"], a:0, topic:7},
+    {q:"Welcher Befehl führt Tests aus (bei JS-Projekten) typ. aus?", opts:["npm test","git test","run tests"], a:0, topic:7},
+
+    // section 8
+    {q:"Wozu dient CHANGELOG.md?", opts:["Versions- & Änderungsverlauf","Um Bugs zu melden","Zum Erstellen von Branches"], a:0, topic:8},
+    {q:"Was ist wichtig für Zusammenarbeit?", opts:["Dokumentation aktuell halten","Alle Aufgaben alleine machen","Keine Pull Requests"], a:0, topic:8},
+
+    // section 9
+    {q:"Welche Datei beschreibt das Projekt für andere?", opts:["LICENSE","README.md",".gitignore"], a:1, topic:9},
+
+    // section 10
+    {q:"Wofür verwendet man GitHub Actions?", opts:["CI/CD Automatisierung","Issue-Tracking","Branching"], a:0, topic:10},
+
+    // section 11
+    {q:"Welcher Befehl lädt Änderungen zum Remote hoch?", opts:["git push","git pull","git commit"], a:0, topic:11},
+    {q:"Welcher Befehl zeigt aktuelle Änderungen / Status?", opts:["git status","git log","git show"], a:0, topic:11}
+  ];
+
+  // Shuffle helper
+  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr; }
+
+  // Quiz UI rendering
+  const quizContainer = document.querySelector('#quiz .quiz');
+  let quizState = JSON.parse(localStorage.getItem('gh_quiz_state') || 'null') || { order: [], answers: {} };
+
+  function ensureOrder(){
+    if(!quizState.order || quizState.order.length !== QUESTIONS.length){
+      quizState.order = QUESTIONS.map((_,i)=> i);
+      shuffle(quizState.order);
+      quizState.answers = {};
+      localStorage.setItem('gh_quiz_state', JSON.stringify(quizState));
+    }
+  }
+  ensureOrder();
+
+  function renderQuiz(){
+    quizContainer.innerHTML = '';
+    quizState.order.forEach((idx, qi)=>{
+      const item = QUESTIONS[idx];
+      const div = document.createElement('div'); div.className='q';
+      const uidx = 'q_' + idx;
+      let html = `<p>${qi+1}. ${item.q}</p>`;
+      item.opts.forEach((opt,oIdx)=>{
+        const checked = quizState.answers[uidx] === String(oIdx) ? 'checked' : '';
+        html += `<label><input type="radio" name="${uidx}" value="${oIdx}" ${checked}> ${opt}</label>`;
+      });
+      div.innerHTML = html;
       quizContainer.appendChild(div);
-    });
-
-    document.getElementById("submitQuiz").addEventListener("click", () => {
-      let score = 0;
-      questions.forEach((q, i) => {
-        const selected = document.querySelector(`input[name="q${i}"]:checked`);
-        if (selected && selected.value === q.a) score++;
+      // attach listener
+      div.querySelectorAll('input[type=radio]').forEach(r=>{
+        r.addEventListener('change', e=>{
+          quizState.answers[uidx] = e.target.value;
+          localStorage.setItem('gh_quiz_state', JSON.stringify(quizState));
+        });
       });
-
-      const percent = Math.round((score / questions.length) * 100);
-      let emoji = "😐";
-      if (percent === 100) emoji = "🔥";
-      else if (percent >= 75) emoji = "💪";
-      else if (percent >= 50) emoji = "🙂";
-      else emoji = "😅";
-
-      document.getElementById("quizResult").textContent = `Du hast ${score}/${questions.length} richtig (${percent}%) ${emoji}`;
     });
+  }
+  renderQuiz();
 
-    // ====================
-    // SEITENWECHSEL
-    // ====================
-    const checklisteSection = document.getElementById("checklisteSection");
-    const quizSection = document.getElementById("quizSection");
-
-    document.getElementById("btnCheckliste").addEventListener("click", () => {
-      checklisteSection.classList.remove("hidden");
-      quizSection.classList.add("hidden");
+  $('#quizSubmit').addEventListener('click', ()=>{
+    let correct = 0;
+    QUESTIONS.forEach((q,i)=>{
+      const uid = 'q_'+i;
+      const ans = quizState.answers[uid];
+      if(ans !== undefined && Number(ans) === q.a) correct++;
     });
+    const total = QUESTIONS.length;
+    const percent = Math.round((correct/total)*100);
+    let emoji = '😐';
+    if(percent === 100) emoji='🔥';
+    else if(percent >= 85) emoji='💯';
+    else if(percent >= 70) emoji='💪';
+    else if(percent >= 50) emoji='🙂';
+    else emoji='😅';
+    $('#quizOutcome').textContent = `Du hast ${correct}/${total} richtig — ${percent}% ${emoji}`;
+  });
 
-    document.getElementById("btnQuiz").addEventListener("click", () => {
-      quizSection.classList.remove("hidden");
-      checklisteSection.classList.add("hidden");
-    });
+  $('#quizReset').addEventListener('click', ()=>{
+    if(confirm('Quiz zurücksetzen (Antworten werden gelöscht)?')){
+      quizState = {order: [], answers:{}};
+      localStorage.removeItem('gh_quiz_state');
+      ensureOrder();
+      renderQuiz();
+      $('#quizOutcome').textContent = '';
+    }
+  });
 
-    // ====================
-    // DARK/LIGHT MODE
-    // ====================
-    const root = document.documentElement;
-    const themeBtn = document.getElementById("toggleTheme");
-    const savedTheme = localStorage.getItem("theme") || "light";
-    root.setAttribute("data-theme", savedTheme);
-    themeBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+  $('#shuffleQuiz').addEventListener('click', ()=>{
+    quizState.order = shuffle(QUESTIONS.map((_,i)=>i));
+    quizState.answers = {};
+    localStorage.setItem('gh_quiz_state', JSON.stringify(quizState));
+    renderQuiz();
+  });
 
-    themeBtn.addEventListener("click", () => {
-      const newTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", newTheme);
-      localStorage.setItem("theme", newTheme);
-      themeBtn.textContent = newTheme === "dark" ? "☀️" : "🌙";
-    });
-  </script>
+  $('#gotoQuiz').addEventListener('click', ()=> {
+    setActive('quiz');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // Buttons: Open tab elements
+  // Tab switching wired earlier; show correct panel when switching
+  function setActive(tabName){
+    tabs.forEach(t=> t.classList.toggle('active', t.dataset.tab === tabName));
+    Object.keys(blocks).forEach(k => blocks[k].classList.toggle('hidden', k !== tabName));
+  }
+
+  // Export via exportBtn wired earlier
+  // import via fileInput wired earlier
+
+  // open/close details programmatically: track open state in localStorage
+  const DETAILS_KEY = 'gh_details_open';
+  function loadDetails(){
+    const raw = localStorage.getItem(DETAILS_KEY);
+    if(raw){
+      try{
+        const openMap = JSON.parse(raw);
+        $$('details.section').forEach(d => {
+          d.open = !!openMap[d.id];
+        });
+      }catch(e){}
+    }
+    // save on change
+    $$('details.section').forEach(d => d.addEventListener('toggle', ()=>{
+      saveDetails();
+    }));
+  }
+  function saveDetails(){
+    const map = {};
+    $$('details.section').forEach(d => map[d.id] = d.open);
+    localStorage.setItem(DETAILS_KEY, JSON.stringify(map));
+  }
+  loadDetails();
+
+  // persist accordion open on load & save
+  window.addEventListener('beforeunload', saveDetails);
+
+  // open/close all also save
+  $('#openAll').addEventListener('click', saveDetails);
+  $('#closeAll').addEventListener('click', saveDetails);
+
+  // Export specific "download" button wired earlier uses exportBtn
+
+  // Export via explicit 'Export' done earlier
+
+  // quick: click on tab implementation (ensure setActive in scope)
+  tabs.forEach(t => t.addEventListener('click', ()=> setActive(t.dataset.tab)));
+
+  // reset All improvements: also reset details state saved
+  $('#resetAll').addEventListener('click', ()=> {
+    if(confirm('Sicher? (Löscht alle Checkboxen, Quizantworten & Einstellungen)')){
+      // clear checkboxes and details
+      checkboxEls.forEach(cb => { cb.checked=false; cb.closest('li') && cb.closest('li').classList.remove('checked'); localStorage.removeItem(CHECK_PREFIX + cb.id); });
+      localStorage.removeItem('gh_quiz_state');
+      localStorage.removeItem(THEME_KEY);
+      localStorage.removeItem(DETAILS_KEY);
+      updateProgress();
+      alert('Alles zurückgesetzt. Seite lädt neu.');
+      location.reload();
+    }
+  });
+
+  // small: import button & fileInput wired earlier
+  $('#importBtn').addEventListener('click', ()=> $('#fileInput').click());
+
+  // Initial progress update
+  updateProgress();
+
+  // allow quick export via Export button (already wired)
+  $('#exportBtn').addEventListener('click', ()=> {
+    const data = gatherStateForExport();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='gh-tool-export.json'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  function gatherStateForExport(){
+    const checks = {};
+    checkboxEls.forEach(cb => checks[cb.id] = !!cb.checked);
+    return {
+      checks,
+      quizState: JSON.parse(localStorage.getItem('gh_quiz_state') || 'null'),
+      detailsOpen: JSON.parse(localStorage.getItem(DETAILS_KEY) || '{}'),
+      theme: localStorage.getItem(THEME_KEY) || 'light',
+      exportedAt: new Date().toISOString()
+    };
+  }
+
+  // import via file input (already hooked earlier)
+  // attach handler for fileInput - ensure available in closure
+  document.getElementById('fileInput').addEventListener('change', function(ev){
+    const file = ev.target.files[0];
+    if(!file) return;
+    const fr = new FileReader();
+    fr.onload = function(e){
+      try {
+        const obj = JSON.parse(e.target.result);
+        if(obj.checks){
+          Object.keys(obj.checks).forEach(id => {
+            const cb = document.getElementById(id);
+            if(cb){
+              cb.checked = !!obj.checks[id];
+              cb.closest('li') && cb.closest('li').classList.toggle('checked', cb.checked);
+              localStorage.setItem(CHECK_PREFIX + id, cb.checked);
+            }
+          });
+        }
+        if(obj.quizState) { localStorage.setItem('gh_quiz_state', JSON.stringify(obj.quizState)); quizState = obj.quizState; }
+        if(obj.detailsOpen){ localStorage.setItem(DETAILS_KEY, JSON.stringify(obj.detailsOpen)); loadDetails(); }
+        if(obj.theme) applyTheme(obj.theme);
+        updateProgress();
+        renderQuiz();
+        alert('Import erfolgreich.');
+      } catch(err){ alert('Fehler beim Import: ' + err.message); }
+    };
+    fr.readAsText(file);
+    // clear input
+    ev.target.value = '';
+  });
+
+})();
+</script>
 </body>
 </html>
