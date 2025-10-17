@@ -1,50 +1,148 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GitHub Projekt Checkliste</title>
   <style>
+    :root {
+      --bg: #f5f7fa;
+      --card-bg: #fff;
+      --primary: #2563eb;
+      --text: #333;
+      --muted: #777;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
-      margin: 40px;
-      background: #f9f9f9;
-      color: #333;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
     }
-    h1, h2 {
-      color: #222;
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 20px;
     }
-    code {
-      background-color: #eee;
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-family: monospace;
+
+    h2 {
+      color: var(--primary);
+      margin-top: 25px;
+      font-size: 1.2rem;
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
     }
-    pre {
-      background-color: #f4f4f4;
-      padding: 10px;
-      overflow-x: auto;
+
+    section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-top: 20px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 8px 12px;
-    }
+
     ul {
       list-style: none;
       padding-left: 0;
+      margin-top: 10px;
     }
+
+    li {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
     li::before {
       content: "☐";
+      color: var(--muted);
       margin-right: 10px;
-      color: #888;
+      flex-shrink: 0;
+    }
+
+    pre {
+      background: #f3f4f6;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: "Fira Code", monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Mobile optimiert */
+    @media (max-width: 600px) {
+      body {
+        padding: 15px;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      section {
+        padding: 15px;
+      }
+      pre {
+        font-size: 0.9rem;
+      }
+      table, th, td {
+        font-size: 0.85rem;
+      }
+    }
+
+    footer {
+      text-align: center;
+      margin: 40px 0 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -52,104 +150,120 @@
 
   <h1>✅ GitHub Projekt Checkliste</h1>
 
-  <h2>🛠️ 1. Projekt auf GitHub erstellen</h2>
-  <ul>
-    <li>Auf <a href="https://github.com">github.com</a> einloggen</li>
-    <li>Rechts oben auf "+" > New repository klicken</li>
-    <li>Repository-Name vergeben</li>
-    <li>Public oder Private wählen</li>
-    <li>Optional: README, .gitignore, LICENSE hinzufügen</li>
-    <li>Auf "Create repository" klicken</li>
-  </ul>
+  <section>
+    <h2>🛠️ 1. Projekt auf GitHub erstellen</h2>
+    <ul>
+      <li>Auf <a href="https://github.com" target="_blank">github.com</a> einloggen</li>
+      <li>Rechts oben auf "+" → <b>New repository</b> klicken</li>
+      <li>Repository-Name vergeben</li>
+      <li>Public oder Private wählen</li>
+      <li>Optional: README, .gitignore, LICENSE hinzufügen</li>
+      <li>Auf „Create repository“ klicken</li>
+    </ul>
+  </section>
 
-  <h2>🧩 2. Projekt lokal in VS Code einrichten</h2>
-  <ul>
-    <li><a href="https://git-scm.com">Git installieren</a></li>
-    <li><a href="https://code.visualstudio.com">VS Code installieren</a></li>
-    <li>Repository klonen:</li>
-  </ul>
-  <pre><code>git clone https://github.com/benutzername/mein-projekt.git
+  <section>
+    <h2>🧩 2. Projekt lokal in VS Code einrichten</h2>
+    <ul>
+      <li><a href="https://git-scm.com" target="_blank">Git installieren</a></li>
+      <li><a href="https://code.visualstudio.com" target="_blank">VS Code installieren</a></li>
+      <li>Repository klonen:</li>
+    </ul>
+    <pre><code>git clone https://github.com/benutzername/mein-projekt.git
 cd mein-projekt
 code .
 </code></pre>
+  </section>
 
-  <h2>📦 3. Struktur und Dateien einrichten</h2>
-  <ul>
-    <li>Projektstruktur (z. B. src/, docs/, tests/)</li>
-    <li>README.md anpassen</li>
-    <li>.gitignore ergänzen</li>
-    <li>Initialer Commit:</li>
-  </ul>
-  <pre><code>git add .
+  <section>
+    <h2>📦 3. Struktur und Dateien einrichten</h2>
+    <ul>
+      <li>Projektstruktur (z. B. <code>src/</code>, <code>docs/</code>, <code>tests/</code>)</li>
+      <li><code>README.md</code> anpassen</li>
+      <li><code>.gitignore</code> ergänzen</li>
+      <li>Initialer Commit:</li>
+    </ul>
+    <pre><code>git add .
 git commit -m "Initial commit"
 git push origin main
 </code></pre>
+  </section>
 
-  <h2>🧾 4. Issues nutzen</h2>
-  <ul>
-    <li>Issues-Tab > New Issue</li>
-    <li>Titel + Beschreibung</li>
-    <li>Labels, Milestones setzen</li>
-    <li>Personen zuweisen</li>
-    <li>PR/Commits mit <code>Fixes #1</code> verknüpfen</li>
-  </ul>
+  <section>
+    <h2>🧾 4. Issues nutzen</h2>
+    <ul>
+      <li>Issues-Tab → New Issue</li>
+      <li>Titel & Beschreibung hinzufügen</li>
+      <li>Labels & Milestones setzen</li>
+      <li>Personen zuweisen</li>
+      <li>PRs/Commits mit <code>Fixes #1</code> verknüpfen</li>
+    </ul>
+  </section>
 
-  <h2>📋 5. Projektmanagement mit GitHub Projects</h2>
-  <ul>
-    <li>Neues Board unter "Projects" anlegen</li>
-    <li>Spalten: To Do, In Progress, Done</li>
-    <li>Issues und PRs als Karten hinzufügen</li>
-  </ul>
+  <section>
+    <h2>📋 5. Projektmanagement mit GitHub Projects</h2>
+    <ul>
+      <li>Neues Board unter „Projects“ anlegen</li>
+      <li>Spalten: To Do, In Progress, Done</li>
+      <li>Issues & PRs als Karten hinzufügen</li>
+    </ul>
+  </section>
 
-  <h2>🔀 6. Branches & Pull Requests</h2>
-  <ul>
-    <li>Branch erstellen:</li>
-  </ul>
-  <pre><code>git checkout -b feature/mein-feature
+  <section>
+    <h2>🔀 6. Branches & Pull Requests</h2>
+    <ul>
+      <li>Branch erstellen:</li>
+    </ul>
+    <pre><code>git checkout -b feature/mein-feature
 git push origin feature/mein-feature
 </code></pre>
-  <ul>
-    <li>PR erstellen, Feedback einholen und mergen</li>
-  </ul>
+    <ul>
+      <li>PR erstellen, Feedback einholen & mergen</li>
+    </ul>
+  </section>
 
-  <h2>🧪 7. Tests & Codequalität</h2>
-  <ul>
-    <li>Linter (z. B. ESLint, Prettier) einrichten</li>
-    <li>Tests schreiben und lokal ausführen:</li>
-  </ul>
-  <pre><code>npm test / pytest</code></pre>
+  <section>
+    <h2>🧪 7. Tests & Codequalität</h2>
+    <ul>
+      <li>Linter (z. B. ESLint, Prettier) einrichten</li>
+      <li>Tests schreiben & lokal ausführen:</li>
+    </ul>
+    <pre><code>npm test / pytest</code></pre>
+  </section>
 
-  <h2>🔁 8. Pflege & Zusammenarbeit</h2>
-  <ul>
-    <li>README und Dokumentation aktuell halten</li>
-    <li>Releases im GitHub-Tab verwalten</li>
-    <li>Versionierung mit Tags:</li>
-  </ul>
-  <pre><code>git tag v1.0.0
+  <section>
+    <h2>🔁 8. Pflege & Zusammenarbeit</h2>
+    <ul>
+      <li>README & Dokumentation aktuell halten</li>
+      <li>Releases im GitHub-Tab verwalten</li>
+      <li>Versionierung mit Tags:</li>
+    </ul>
+    <pre><code>git tag v1.0.0
 git push origin v1.0.0
 </code></pre>
+  </section>
 
-  <h2>💡 9. Empfohlene Projektdateien</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Datei</th>
-        <th>Zweck</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>README.md</td><td>Projektbeschreibung & Anleitung</td></tr>
-      <tr><td>.gitignore</td><td>Dateien vom Commit ausschließen</td></tr>
-      <tr><td>LICENSE</td><td>Rechtliche Lizenz</td></tr>
-      <tr><td>CONTRIBUTING.md</td><td>Anleitung für Mitwirkende</td></tr>
-      <tr><td>CODE_OF_CONDUCT.md</td><td>Verhaltenskodex</td></tr>
-      <tr><td>CHANGELOG.md</td><td>Versions- & Änderungsverlauf</td></tr>
-    </tbody>
-  </table>
+  <section>
+    <h2>💡 9. Empfohlene Projektdateien</h2>
+    <table>
+      <thead>
+        <tr><th>Datei</th><th>Zweck</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>README.md</td><td>Projektbeschreibung & Anleitung</td></tr>
+        <tr><td>.gitignore</td><td>Dateien vom Commit ausschließen</td></tr>
+        <tr><td>LICENSE</td><td>Rechtliche Lizenz</td></tr>
+        <tr><td>CONTRIBUTING.md</td><td>Anleitung für Mitwirkende</td></tr>
+        <tr><td>CODE_OF_CONDUCT.md</td><td>Verhaltenskodex</td></tr>
+        <tr><td>CHANGELOG.md</td><td>Versions- & Änderungsverlauf</td></tr>
+      </tbody>
+    </table>
+  </section>
 
-  <h2>☁️ 10. Optional: GitHub Actions (CI/CD)</h2>
-  <p>Beispiel für Workflow (.github/workflows/ci.yml):</p>
-  <pre><code>name: CI
+  <section>
+    <h2>☁️ 10. Optional: GitHub Actions (CI/CD)</h2>
+    <p>Beispiel für Workflow (<code>.github/workflows/ci.yml</code>):</p>
+    <pre><code>name: CI
 on: [push, pull_request]
 jobs:
   build:
@@ -163,25 +277,27 @@ jobs:
       - run: npm install
       - run: npm test
 </code></pre>
+  </section>
 
-  <h2>✅ Bonus: Nützliche Git-Befehle</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Befehl</th>
-        <th>Bedeutung</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>git status</td><td>Status anzeigen</td></tr>
-      <tr><td>git add .</td><td>Alle Änderungen zum Commit vormerken</td></tr>
-      <tr><td>git commit -m "msg"</td><td>Commit erstellen</td></tr>
-      <tr><td>git pull</td><td>Änderungen vom Remote holen</td></tr>
-      <tr><td>git push</td><td>Änderungen hochladen</td></tr>
-      <tr><td>git checkout branch</td><td>Branch wechseln</td></tr>
-      <tr><td>git branch -d branch</td><td>Branch löschen</td></tr>
-    </tbody>
-  </table>
+  <section>
+    <h2>✅ Bonus: Nützliche Git-Befehle</h2>
+    <table>
+      <thead>
+        <tr><th>Befehl</th><th>Bedeutung</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git status</code></td><td>Status anzeigen</td></tr>
+        <tr><td><code>git add .</code></td><td>Alle Änderungen vormerken</td></tr>
+        <tr><td><code>git commit -m "msg"</code></td><td>Commit erstellen</td></tr>
+        <tr><td><code>git pull</code></td><td>Änderungen vom Remote holen</td></tr>
+        <tr><td><code>git push</code></td><td>Änderungen hochladen</td></tr>
+        <tr><td><code>git checkout branch</code></td><td>Branch wechseln</td></tr>
+        <tr><td><code>git branch -d branch</code></td><td>Branch löschen</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>© 2025 GitHub Projekt Checkliste · Erstellt mit ❤️</footer>
 
 </body>
 </html>
