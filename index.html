@@ -3,47 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub Projekt Checkliste</title>
+  <title>GitHub Tool – Checkliste & Quiz</title>
   <style>
     :root {
       --bg: #f5f7fa;
       --card-bg: #fff;
-      --primary: #2563eb;
       --text: #333;
       --muted: #777;
+      --primary: #2563eb;
+      --accent: #22c55e;
       --radius: 12px;
       --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    [data-theme="dark"] {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --primary: #58a6ff;
+      --accent: #16a34a;
+      --shadow: 0 0 10px rgba(255, 255, 255, 0.05);
     }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      padding: 20px;
       max-width: 900px;
       margin: 0 auto;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     h1 {
-      text-align: center;
-      font-size: 1.8rem;
       color: var(--primary);
-      margin-bottom: 20px;
+      font-size: 1.8rem;
     }
 
-    h2 {
-      color: var(--primary);
-      margin-top: 25px;
-      font-size: 1.2rem;
-      border-left: 4px solid var(--primary);
-      padding-left: 10px;
+    nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    nav button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    nav button:hover {
+      background: #1e4ed8;
+    }
+
+    .theme-btn {
+      background: var(--accent);
     }
 
     section {
@@ -51,253 +80,237 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 20px;
-      margin-top: 20px;
+      margin-top: 15px;
+      transition: 0.3s;
+    }
+
+    h2 {
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+      margin-bottom: 10px;
     }
 
     ul {
       list-style: none;
-      padding-left: 0;
+      padding: 0;
       margin-top: 10px;
     }
 
     li {
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #3333;
+      padding: 8px 0;
     }
 
-    li:last-child {
-      border-bottom: none;
+    input[type="checkbox"] {
+      transform: scale(1.3);
+      accent-color: var(--primary);
+      cursor: pointer;
     }
 
-    li::before {
-      content: "☐";
+    li.checked label {
+      text-decoration: line-through;
       color: var(--muted);
-      margin-right: 10px;
-      flex-shrink: 0;
+    }
+
+    label {
+      flex: 1;
+      cursor: pointer;
     }
 
     pre {
-      background: #f3f4f6;
+      background: #1e293b33;
       padding: 10px;
       border-radius: 8px;
       overflow-x: auto;
       margin-top: 10px;
     }
 
-    code {
-      background: #eee;
-      padding: 2px 4px;
-      border-radius: 4px;
-      font-family: "Fira Code", monospace;
+    .reset-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      font-size: 0.95rem;
+    .reset-btn:hover {
+      background: #1e4ed8;
     }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
+    .hidden {
+      display: none;
     }
 
-    th {
-      background: #f0f0f0;
+    .question {
+      margin-bottom: 20px;
     }
 
-    a {
-      color: var(--primary);
-      text-decoration: none;
+    .question p {
+      font-weight: 600;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* Mobile optimiert */
-    @media (max-width: 600px) {
-      body {
-        padding: 15px;
-      }
-      h1 {
-        font-size: 1.5rem;
-      }
-      section {
-        padding: 15px;
-      }
-      pre {
-        font-size: 0.9rem;
-      }
-      table, th, td {
-        font-size: 0.85rem;
-      }
+    .result {
+      font-weight: bold;
+      margin-top: 10px;
     }
 
     footer {
       text-align: center;
-      margin: 40px 0 10px;
       color: var(--muted);
+      margin: 30px 0 10px;
       font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 15px; }
+      h1 { font-size: 1.5rem; }
+      section { padding: 15px; }
     }
   </style>
 </head>
 <body>
 
-  <h1>✅ GitHub Projekt Checkliste</h1>
+  <header>
+    <h1>GitHub Tool</h1>
+    <nav>
+      <button id="btnCheckliste">✅ Checkliste</button>
+      <button id="btnQuiz">❓ Quiz</button>
+      <button class="theme-btn" id="toggleTheme">🌙</button>
+    </nav>
+  </header>
 
-  <section>
+  <!-- Checkliste -->
+  <section id="checklisteSection">
     <h2>🛠️ 1. Projekt auf GitHub erstellen</h2>
     <ul>
-      <li>Auf <a href="https://github.com" target="_blank">github.com</a> einloggen</li>
-      <li>Rechts oben auf "+" → <b>New repository</b> klicken</li>
-      <li>Repository-Name vergeben</li>
-      <li>Public oder Private wählen</li>
-      <li>Optional: README, .gitignore, LICENSE hinzufügen</li>
-      <li>Auf „Create repository“ klicken</li>
+      <li><input type="checkbox" id="s1"><label for="s1">GitHub öffnen & anmelden</label></li>
+      <li><input type="checkbox" id="s2"><label for="s2">„+ → New repository“ klicken</label></li>
+      <li><input type="checkbox" id="s3"><label for="s3">README und .gitignore hinzufügen</label></li>
     </ul>
-  </section>
 
-  <section>
-    <h2>🧩 2. Projekt lokal in VS Code einrichten</h2>
+    <h2>🧩 2. Lokale Einrichtung</h2>
     <ul>
-      <li><a href="https://git-scm.com" target="_blank">Git installieren</a></li>
-      <li><a href="https://code.visualstudio.com" target="_blank">VS Code installieren</a></li>
-      <li>Repository klonen:</li>
+      <li><input type="checkbox" id="s4"><label for="s4">Git installieren</label></li>
+      <li><input type="checkbox" id="s5"><label for="s5">Repository klonen</label></li>
     </ul>
-    <pre><code>git clone https://github.com/benutzername/mein-projekt.git
-cd mein-projekt
-code .
-</code></pre>
+
+    <pre><code>git clone https://github.com/benutzername/projekt.git</code></pre>
+    <button class="reset-btn" id="reset">🔄 Fortschritt zurücksetzen</button>
   </section>
 
-  <section>
-    <h2>📦 3. Struktur und Dateien einrichten</h2>
-    <ul>
-      <li>Projektstruktur (z. B. <code>src/</code>, <code>docs/</code>, <code>tests/</code>)</li>
-      <li><code>README.md</code> anpassen</li>
-      <li><code>.gitignore</code> ergänzen</li>
-      <li>Initialer Commit:</li>
-    </ul>
-    <pre><code>git add .
-git commit -m "Initial commit"
-git push origin main
-</code></pre>
+  <!-- Quiz -->
+  <section id="quizSection" class="hidden">
+    <h2>❓ GitHub Quiz</h2>
+    <div id="quiz"></div>
+    <button id="submitQuiz">Ergebnis anzeigen</button>
+    <p id="quizResult" class="result"></p>
   </section>
 
-  <section>
-    <h2>🧾 4. Issues nutzen</h2>
-    <ul>
-      <li>Issues-Tab → New Issue</li>
-      <li>Titel & Beschreibung hinzufügen</li>
-      <li>Labels & Milestones setzen</li>
-      <li>Personen zuweisen</li>
-      <li>PRs/Commits mit <code>Fixes #1</code> verknüpfen</li>
-    </ul>
-  </section>
+  <footer>© 2025 GitHub Tool · Erstellt mit ❤️</footer>
 
-  <section>
-    <h2>📋 5. Projektmanagement mit GitHub Projects</h2>
-    <ul>
-      <li>Neues Board unter „Projects“ anlegen</li>
-      <li>Spalten: To Do, In Progress, Done</li>
-      <li>Issues & PRs als Karten hinzufügen</li>
-    </ul>
-  </section>
+  <script>
+    // ====================
+    // CHECKLISTE
+    // ====================
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+      const saved = localStorage.getItem(cb.id);
+      if (saved === "true") {
+        cb.checked = true;
+        cb.parentElement.classList.add("checked");
+      }
+      cb.addEventListener("change", () => {
+        localStorage.setItem(cb.id, cb.checked);
+        cb.parentElement.classList.toggle("checked", cb.checked);
+      });
+    });
 
-  <section>
-    <h2>🔀 6. Branches & Pull Requests</h2>
-    <ul>
-      <li>Branch erstellen:</li>
-    </ul>
-    <pre><code>git checkout -b feature/mein-feature
-git push origin feature/mein-feature
-</code></pre>
-    <ul>
-      <li>PR erstellen, Feedback einholen & mergen</li>
-    </ul>
-  </section>
+    document.getElementById("reset").addEventListener("click", () => {
+      if (confirm("Alle Häkchen entfernen?")) {
+        checkboxes.forEach(cb => {
+          cb.checked = false;
+          localStorage.removeItem(cb.id);
+          cb.parentElement.classList.remove("checked");
+        });
+      }
+    });
 
-  <section>
-    <h2>🧪 7. Tests & Codequalität</h2>
-    <ul>
-      <li>Linter (z. B. ESLint, Prettier) einrichten</li>
-      <li>Tests schreiben & lokal ausführen:</li>
-    </ul>
-    <pre><code>npm test / pytest</code></pre>
-  </section>
+    // ====================
+    // QUIZ
+    // ====================
+    const questions = [
+      { q: "Was macht der Befehl 'git clone'?", a: "Kopiert ein Repository auf deinen PC", options: ["Erstellt ein neues Repo", "Kopiert ein Repository auf deinen PC", "Fügt Änderungen hinzu"] },
+      { q: "Wofür steht 'README.md'?", a: "Projektbeschreibung & Anleitung", options: ["Fehlerprotokoll", "Projektbeschreibung & Anleitung", "Git-Einstellungen"] },
+      { q: "Mit welchem Befehl lädst du Änderungen hoch?", a: "git push", options: ["git add", "git pull", "git push"] },
+      { q: "Wozu dient '.gitignore'?", a: "Dateien vom Tracking ausschließen", options: ["Dateien löschen", "Dateien hochladen", "Dateien vom Tracking ausschließen"] },
+    ];
 
-  <section>
-    <h2>🔁 8. Pflege & Zusammenarbeit</h2>
-    <ul>
-      <li>README & Dokumentation aktuell halten</li>
-      <li>Releases im GitHub-Tab verwalten</li>
-      <li>Versionierung mit Tags:</li>
-    </ul>
-    <pre><code>git tag v1.0.0
-git push origin v1.0.0
-</code></pre>
-  </section>
+    const quizContainer = document.getElementById("quiz");
+    questions.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.innerHTML = `<p>${i + 1}. ${q.q}</p>` +
+        q.options.map(o => `
+          <label><input type="radio" name="q${i}" value="${o}"> ${o}</label><br>
+        `).join("");
+      quizContainer.appendChild(div);
+    });
 
-  <section>
-    <h2>💡 9. Empfohlene Projektdateien</h2>
-    <table>
-      <thead>
-        <tr><th>Datei</th><th>Zweck</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>README.md</td><td>Projektbeschreibung & Anleitung</td></tr>
-        <tr><td>.gitignore</td><td>Dateien vom Commit ausschließen</td></tr>
-        <tr><td>LICENSE</td><td>Rechtliche Lizenz</td></tr>
-        <tr><td>CONTRIBUTING.md</td><td>Anleitung für Mitwirkende</td></tr>
-        <tr><td>CODE_OF_CONDUCT.md</td><td>Verhaltenskodex</td></tr>
-        <tr><td>CHANGELOG.md</td><td>Versions- & Änderungsverlauf</td></tr>
-      </tbody>
-    </table>
-  </section>
+    document.getElementById("submitQuiz").addEventListener("click", () => {
+      let score = 0;
+      questions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && selected.value === q.a) score++;
+      });
 
-  <section>
-    <h2>☁️ 10. Optional: GitHub Actions (CI/CD)</h2>
-    <p>Beispiel für Workflow (<code>.github/workflows/ci.yml</code>):</p>
-    <pre><code>name: CI
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - run: npm install
-      - run: npm test
-</code></pre>
-  </section>
+      const percent = Math.round((score / questions.length) * 100);
+      let emoji = "😐";
+      if (percent === 100) emoji = "🔥";
+      else if (percent >= 75) emoji = "💪";
+      else if (percent >= 50) emoji = "🙂";
+      else emoji = "😅";
 
-  <section>
-    <h2>✅ Bonus: Nützliche Git-Befehle</h2>
-    <table>
-      <thead>
-        <tr><th>Befehl</th><th>Bedeutung</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>git status</code></td><td>Status anzeigen</td></tr>
-        <tr><td><code>git add .</code></td><td>Alle Änderungen vormerken</td></tr>
-        <tr><td><code>git commit -m "msg"</code></td><td>Commit erstellen</td></tr>
-        <tr><td><code>git pull</code></td><td>Änderungen vom Remote holen</td></tr>
-        <tr><td><code>git push</code></td><td>Änderungen hochladen</td></tr>
-        <tr><td><code>git checkout branch</code></td><td>Branch wechseln</td></tr>
-        <tr><td><code>git branch -d branch</code></td><td>Branch löschen</td></tr>
-      </tbody>
-    </table>
-  </section>
+      document.getElementById("quizResult").textContent = `Du hast ${score}/${questions.length} richtig (${percent}%) ${emoji}`;
+    });
 
-  <footer>© 2025 GitHub Projekt Checkliste · Erstellt mit ❤️</footer>
+    // ====================
+    // SEITENWECHSEL
+    // ====================
+    const checklisteSection = document.getElementById("checklisteSection");
+    const quizSection = document.getElementById("quizSection");
 
+    document.getElementById("btnCheckliste").addEventListener("click", () => {
+      checklisteSection.classList.remove("hidden");
+      quizSection.classList.add("hidden");
+    });
+
+    document.getElementById("btnQuiz").addEventListener("click", () => {
+      quizSection.classList.remove("hidden");
+      checklisteSection.classList.add("hidden");
+    });
+
+    // ====================
+    // DARK/LIGHT MODE
+    // ====================
+    const root = document.documentElement;
+    const themeBtn = document.getElementById("toggleTheme");
+    const savedTheme = localStorage.getItem("theme") || "light";
+    root.setAttribute("data-theme", savedTheme);
+    themeBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+
+    themeBtn.addEventListener("click", () => {
+      const newTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeBtn.textContent = newTheme === "dark" ? "☀️" : "🌙";
+    });
+  </script>
 </body>
 </html>
