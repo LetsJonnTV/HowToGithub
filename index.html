@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>GitHub Projekt Checkliste</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 40px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      color: #222;
+    }
+    code {
+      background-color: #eee;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px 12px;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li::before {
+      content: "☐";
+      margin-right: 10px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>✅ GitHub Projekt Checkliste</h1>
+
+  <h2>🛠️ 1. Projekt auf GitHub erstellen</h2>
+  <ul>
+    <li>Auf <a href="https://github.com">github.com</a> einloggen</li>
+    <li>Rechts oben auf "+" > New repository klicken</li>
+    <li>Repository-Name vergeben</li>
+    <li>Public oder Private wählen</li>
+    <li>Optional: README, .gitignore, LICENSE hinzufügen</li>
+    <li>Auf "Create repository" klicken</li>
+  </ul>
+
+  <h2>🧩 2. Projekt lokal in VS Code einrichten</h2>
+  <ul>
+    <li><a href="https://git-scm.com">Git installieren</a></li>
+    <li><a href="https://code.visualstudio.com">VS Code installieren</a></li>
+    <li>Repository klonen:</li>
+  </ul>
+  <pre><code>git clone https://github.com/benutzername/mein-projekt.git
+cd mein-projekt
+code .
+</code></pre>
+
+  <h2>📦 3. Struktur und Dateien einrichten</h2>
+  <ul>
+    <li>Projektstruktur (z. B. src/, docs/, tests/)</li>
+    <li>README.md anpassen</li>
+    <li>.gitignore ergänzen</li>
+    <li>Initialer Commit:</li>
+  </ul>
+  <pre><code>git add .
+git commit -m "Initial commit"
+git push origin main
+</code></pre>
+
+  <h2>🧾 4. Issues nutzen</h2>
+  <ul>
+    <li>Issues-Tab > New Issue</li>
+    <li>Titel + Beschreibung</li>
+    <li>Labels, Milestones setzen</li>
+    <li>Personen zuweisen</li>
+    <li>PR/Commits mit <code>Fixes #1</code> verknüpfen</li>
+  </ul>
+
+  <h2>📋 5. Projektmanagement mit GitHub Projects</h2>
+  <ul>
+    <li>Neues Board unter "Projects" anlegen</li>
+    <li>Spalten: To Do, In Progress, Done</li>
+    <li>Issues und PRs als Karten hinzufügen</li>
+  </ul>
+
+  <h2>🔀 6. Branches & Pull Requests</h2>
+  <ul>
+    <li>Branch erstellen:</li>
+  </ul>
+  <pre><code>git checkout -b feature/mein-feature
+git push origin feature/mein-feature
+</code></pre>
+  <ul>
+    <li>PR erstellen, Feedback einholen und mergen</li>
+  </ul>
+
+  <h2>🧪 7. Tests & Codequalität</h2>
+  <ul>
+    <li>Linter (z. B. ESLint, Prettier) einrichten</li>
+    <li>Tests schreiben und lokal ausführen:</li>
+  </ul>
+  <pre><code>npm test / pytest</code></pre>
+
+  <h2>🔁 8. Pflege & Zusammenarbeit</h2>
+  <ul>
+    <li>README und Dokumentation aktuell halten</li>
+    <li>Releases im GitHub-Tab verwalten</li>
+    <li>Versionierung mit Tags:</li>
+  </ul>
+  <pre><code>git tag v1.0.0
+git push origin v1.0.0
+</code></pre>
+
+  <h2>💡 9. Empfohlene Projektdateien</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Datei</th>
+        <th>Zweck</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>README.md</td><td>Projektbeschreibung & Anleitung</td></tr>
+      <tr><td>.gitignore</td><td>Dateien vom Commit ausschließen</td></tr>
+      <tr><td>LICENSE</td><td>Rechtliche Lizenz</td></tr>
+      <tr><td>CONTRIBUTING.md</td><td>Anleitung für Mitwirkende</td></tr>
+      <tr><td>CODE_OF_CONDUCT.md</td><td>Verhaltenskodex</td></tr>
+      <tr><td>CHANGELOG.md</td><td>Versions- & Änderungsverlauf</td></tr>
+    </tbody>
+  </table>
+
+  <h2>☁️ 10. Optional: GitHub Actions (CI/CD)</h2>
+  <p>Beispiel für Workflow (.github/workflows/ci.yml):</p>
+  <pre><code>name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm install
+      - run: npm test
+</code></pre>
+
+  <h2>✅ Bonus: Nützliche Git-Befehle</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Befehl</th>
+        <th>Bedeutung</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>git status</td><td>Status anzeigen</td></tr>
+      <tr><td>git add .</td><td>Alle Änderungen zum Commit vormerken</td></tr>
+      <tr><td>git commit -m "msg"</td><td>Commit erstellen</td></tr>
+      <tr><td>git pull</td><td>Änderungen vom Remote holen</td></tr>
+      <tr><td>git push</td><td>Änderungen hochladen</td></tr>
+      <tr><td>git checkout branch</td><td>Branch wechseln</td></tr>
+      <tr><td>git branch -d branch</td><td>Branch löschen</td></tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
